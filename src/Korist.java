@@ -33,7 +33,7 @@ public class Korist extends Trava implements Runnable{
             System.out.println(i);
             //System.out.println(list.size());
             //System.out.println(list.get(i).size());
-            for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j < (((pozice[1] + 1) <= list.get(i).size())?(pozice[1]+1):(list.size()-1)); j++) {
+            for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j < (((pozice[1] + 1) <= list.get(i).size())?(pozice[1]+1):(list.get(i).size()-1)); j++) {
                 //System.out.println(j);
                 System.out.println(list.get(i).get(j)+" ");
             }
