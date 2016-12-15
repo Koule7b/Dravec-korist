@@ -3,7 +3,7 @@
  */
 public class Spusteni {
     public static void main(String[] args) {
-        NastaveniUzivatele nastaveniUzivatele = new NastaveniUzivatele();
-        nastaveniUzivatele.provedNastaveni();
+        Okno okno = new Okno();
+        okno.pustSe();
     }
 }
