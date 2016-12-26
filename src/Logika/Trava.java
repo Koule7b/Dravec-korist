@@ -26,4 +26,7 @@ public class Trava extends Misto implements Runnable{
             System.out.println(zivotnost);
         }
     }
+    public int getZivotnost() {
+        return zivotnost;
+    }
 }
