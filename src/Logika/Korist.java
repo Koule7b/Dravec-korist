@@ -40,6 +40,12 @@ public class Korist extends Trava implements Runnable{
             spi();
         }
     }
+
+    /**
+     * metoda, kterou se jedinec rozhlédne, přijímá jako parametr list a případně co za potravu má hledat.
+     * @param list
+     * @param potrava
+     */
     protected synchronized void rozhledniSe(ArrayList<ArrayList<Misto>> list, Trava potrava){
         //System.out.println(Arrays.toString(pozice));
         for (int i = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); i <= (((pozice[0] + 1) < list.size())?(pozice[0]+1):(list.size()-1)); i++) {
@@ -70,6 +76,12 @@ public class Korist extends Trava implements Runnable{
         }
         this.neco--;
     }
+
+    /**
+     * metoda, která po rozhlédnutí se přesuje jedince na jiné místo.
+     * @param x
+     * @param y
+     */
     protected synchronized void presunSe(int x, int y){
         int[] pom = new int[2];
         pom[0] = x;
@@ -79,6 +91,12 @@ public class Korist extends Trava implements Runnable{
         list.get(pozice[0]).set(pozice[1], misto);
         System.out.println(list);
     }
+
+    /**
+     * metoda, která rozmnoží jedince.
+     * @param x
+     * @param y
+     */
     protected synchronized void rozmnozSe(int x, int y){
         int[] pom = new int[2];
         pom[0] = x;
@@ -91,8 +109,12 @@ public class Korist extends Trava implements Runnable{
         }
         System.out.println(list);
     }
-    public boolean getStoji(){
-    return stoji;}
+
+    /**
+     * metoda, která sní potravu vedle.
+     * @param x
+     * @param y
+     */
     protected synchronized void snez(int x, int y){
         this.neco += list.get(x).get(y).getZivotnost();
         Misto misto = new Misto();
@@ -104,6 +126,10 @@ public class Korist extends Trava implements Runnable{
         System.out.println(Thread.currentThread().getId()+" "+getZivotnost());
     }
 
+    /**
+     * metoda, která vrací zbývající "kola".
+     * @return
+     */
     public int getZivotnost() {
         return neco;
     }

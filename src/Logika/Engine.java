@@ -14,6 +14,12 @@ public class Engine {
     ArrayList<ArrayList<Misto>> pole2D = new ArrayList<>();
     Random ran = new Random();
 
+    /**
+     * metoda vytvářející dvourozměrné pole náhodně rozmístěných dravců, míst, kořistí a trávy.
+     * @param radky
+     * @param sloupce
+     * @return
+     */
     public ArrayList<ArrayList<Misto>> vytvorMapuPoli(int radky, int sloupce) {
         for (int i = 0; i < radky; i++) {
             ArrayList<Misto> pole1D = new ArrayList<>();

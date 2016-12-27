@@ -28,6 +28,9 @@ public class Trava extends Misto implements Runnable{
          */
     }
 
+    /**
+     * metoda která uspí vlákno na vteřinu
+     */
     protected void spi(){
         try {
             synchronized (Thread.currentThread()) {
