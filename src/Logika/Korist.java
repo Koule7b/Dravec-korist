@@ -16,33 +16,31 @@ public class Korist extends Trava implements Runnable{
     private final Object lock3 = new Object();
     private boolean stoji = false;
     private int neco = 9;
+    private int zivotnost = 9;
     private boolean konecKola = false;
     public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice){
-        super(list);
+        super(list, pozice);
         this.list = list;
         this.pozice = pozice;
     }
     @Override
     public void run() {
+        Trava trava = new Trava(list, pozice);
         while (Thread.currentThread().isAlive()) {
             synchronized (lock) {
-                rozhledniSe(list);
+                rozhledniSe(list,trava);
                 //System.out.println(list);
             }
             //System.out.println("l");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if(neco == 0){
                 //Thread.currentThread().destroy();
             }
             konecKola = false;
             //System.out.println("u");
+            spi();
         }
     }
-    private synchronized void rozhledniSe(ArrayList<ArrayList<Misto>> list){
+    protected synchronized void rozhledniSe(ArrayList<ArrayList<Misto>> list, Trava potrava){
         //System.out.println(Arrays.toString(pozice));
         for (int i = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); i <= (((pozice[0] + 1) < list.size())?(pozice[0]+1):(list.size()-1)); i++) {
             for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j <= (((pozice[1] + 1) < list.get(i).size())?(pozice[1]+1):(list.get(i).size()-1)); j++) {
@@ -50,7 +48,8 @@ public class Korist extends Trava implements Runnable{
                 //System.out.println(list);
                 if(!konecKola) {
                     synchronized (lock2) {
-
+                        super.rozhledniSe();
+                        // TODO: 27.12.16  předělat tyto podmínky, tak aby se provedla jen jedna z možností, nebo přehodit do switche
                         /**
                         if (list.get(i).get(j).getClass().equals(Misto.class)) {
                             //System.out.println();
@@ -61,7 +60,7 @@ public class Korist extends Trava implements Runnable{
                             konecKola = true;
                         }
                          */
-                        if (list.get(i).get(j).getClass().equals(Trava.class)) {
+                        if (list.get(i).get(j).getClass().equals(potrava.getClass())) {
                             snez(i, j);
                             konecKola = true;
                         }
@@ -71,7 +70,7 @@ public class Korist extends Trava implements Runnable{
         }
         this.neco--;
     }
-    private synchronized void presunSe(int x, int y){
+    protected synchronized void presunSe(int x, int y){
         int[] pom = new int[2];
         pom[0] = x;
         pom[1] = y;
@@ -80,7 +79,7 @@ public class Korist extends Trava implements Runnable{
         list.get(pozice[0]).set(pozice[1], misto);
         System.out.println(list);
     }
-    private synchronized void rozmnozSe(int x, int y){
+    protected synchronized void rozmnozSe(int x, int y){
         int[] pom = new int[2];
         pom[0] = x;
         pom[1] = y;
@@ -94,7 +93,7 @@ public class Korist extends Trava implements Runnable{
     }
     public boolean getStoji(){
     return stoji;}
-    private synchronized void snez(int x, int y){
+    protected synchronized void snez(int x, int y){
         this.neco += list.get(x).get(y).getZivotnost();
         Misto misto = new Misto();
         System.out.println(Thread.currentThread().getId()+" "+list);

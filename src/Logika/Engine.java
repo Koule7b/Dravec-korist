@@ -19,8 +19,8 @@ public class Engine {
             ArrayList<Misto> pole1D = new ArrayList<>();
             for (int j = 0; j < sloupce; j++) {
                 int[] pozice = new int[2];
-                //switch ((ran.nextInt(4))) {
-                switch (j){
+                switch ((ran.nextInt(4))) {
+                //switch (j){
                     case 0:
                         pozice[0] = i;
                         pozice[1] = j;
@@ -30,16 +30,34 @@ public class Engine {
                         pole1D.add(korist);
                         break;
                     case 1:
-                        pole1D.add(new Trava(pole2D));
+                        pozice[0] = i;
+                        pozice[1] = j;
+                        Trava trava = new Trava(pole2D, pozice);
+                        Thread v = new Thread(trava);
+                        v.start();
+                        pole1D.add(trava);
                         break;
                     case 2:
-                        pole1D.add(new Dravec(pole2D, pozice));
+                        pozice[0] = i;
+                        pozice[1] = j;
+                        Dravec dravec = new Dravec(pole2D, pozice);
+                        Thread vd = new Thread(dravec);
+                        vd.start();
+                        pole1D.add(dravec);
                         break;
                     case 3:
-                        pole1D.add(new Trava(pole2D));
+                        pozice[0] = i;
+                        pozice[1] = j;
+                        Korist k = new Korist(pole2D, pozice);
+                        Thread vk = new Thread(k);
+                        vk.start();
+                        pole1D.add(k);
                         break;
                     case 4:
-                        pole1D.add(new Misto());
+                        pozice[0] = i;
+                        pozice[1] = j;
+                        Misto misto = new Misto();
+                        pole1D.add(misto);
                         break;
                 }
             }

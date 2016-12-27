@@ -10,4 +10,5 @@ public class Misto {
     public int getZivotnost(){
         return zivotnost;
     }
+    protected void rozhledniSe(){}
 }

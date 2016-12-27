@@ -1,8 +1,7 @@
 package Logika;
 
-import Logika.Misto;
-
 import java.util.ArrayList;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -10,20 +9,32 @@ import java.util.ArrayList;
 public class Trava extends Misto implements Runnable{
     private int zivotnost = 5;
     private ArrayList<ArrayList<Misto>> list;
-    public Trava(ArrayList<ArrayList<Misto>> list){
+    private int[] pozice = new int[2];
+    public Trava(ArrayList<ArrayList<Misto>> list, int[] pozice){
         this.list = list;
+        this.pozice = pozice;
     }
 
     @Override
     public void run() {
-        while(true){
+        while(zivotnost != 0){
             this.zivotnost -= 1;
-            try {
-                wait(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            spi();
+        }
+        /**
+        Thread.currentThread().interrupt();
+        Misto misto = new Misto();
+        list.get(pozice[0]).set(pozice[1], misto);
+         */
+    }
+
+    protected void spi(){
+        try {
+            synchronized (Thread.currentThread()) {
+                Thread.currentThread().wait(1000);
             }
-            System.out.println(zivotnost);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     public int getZivotnost() {
