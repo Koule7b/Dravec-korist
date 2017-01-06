@@ -1,6 +1,4 @@
-package Logika;
-
-import java.awt.*;
+package Server;
 
 /**
  * Created by stepanmudra on 19.11.16.

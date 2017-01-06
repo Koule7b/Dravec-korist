@@ -1,22 +1,23 @@
-package Logika;
+package Client;
 
-import Logika.Okno;
+import Server.Engine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Scanner;
 
 /**
  * Created by stepanmudra on 02.12.16.
  */
 public class NastaveniUzivatele extends JPanel implements ActionListener{
-    Scanner sc = new Scanner(System.in);
     int radky;
     int sloupce;
-    Okno okno;
+    Client.Okno okno;
     final private String SPUST_SIMULACI = "Spustit simulaci";
     final private String VYPNOUT = "Vypnout";
     JTextField sir = new JTextField();
@@ -40,10 +41,13 @@ public class NastaveniUzivatele extends JPanel implements ActionListener{
     JPanel panelProPanely2 = new JPanel();
     JButton s = new JButton(SPUST_SIMULACI);
     JButton v = new JButton(VYPNOUT);
+    Socket socket;
+    Scanner sc;
 
-    public NastaveniUzivatele(Okno okno){
+    public NastaveniUzivatele(Client.Okno okno, Socket socket){
         setBackground(Color.BLUE);
         this.setLayout(new BorderLayout());
+        this.socket = socket;
         popisekSirkyVysky.setLayout(new BorderLayout());
         textovePoleSirkaVYska.setLayout(new BorderLayout());
         poleProTlacitka.setLayout(new BorderLayout());
@@ -82,19 +86,31 @@ public class NastaveniUzivatele extends JPanel implements ActionListener{
         this.add(popisekSirkyVysky, BorderLayout.SOUTH);
         this.add(panelProPanely, BorderLayout.CENTER);
         this.okno = okno;
+        try {
+            sc = new Scanner(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.requestFocus();
         velikostPole();
+        this.setVisible(true);
     }
 
-    public void provedNastaveni(){
-        spustSimulaci(getRadky(), getSloupce());
+    public void provedNastaveni(PrintWriter pw){
+        spustSimulaci(getRadky(), getSloupce(), pw);
     }
     public void velikostPole(){
-        System.out.println("zadej počet řádků");
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pw.println("zadej počet řádků");
         radky = sc.nextInt();
-        System.out.println("zadej počet sloupců");
+        pw.println("zadej počet sloupců");
         sloupce = sc.nextInt();
-        provedNastaveni();
+        provedNastaveni(pw);
     }
 
     public int getRadky() {
@@ -104,9 +120,9 @@ public class NastaveniUzivatele extends JPanel implements ActionListener{
     public int getSloupce() {
         return sloupce;
     }
-    public void spustSimulaci(int radky, int sloupce){
+    public void spustSimulaci(int radky, int sloupce, PrintWriter pw){
         Engine engine = new Engine();
-        engine.vytvorMapuPoli(radky, sloupce);
+        engine.vytvorMapuPoli(radky, sloupce, pw);
     }
 
     @Override
@@ -143,5 +159,6 @@ public class NastaveniUzivatele extends JPanel implements ActionListener{
         trava.setPreferredSize(new Dimension(popisekTrava.getWidth(), popisekTrava.getHeight()));
         textovePoleSirkaVYska.setBackground(Color.CYAN);
         poleProTlacitka.setBackground(Color.YELLOW);
+        repaint();
     }
 }

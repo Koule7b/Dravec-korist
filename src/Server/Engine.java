@@ -1,11 +1,9 @@
-package Logika;
+package Server;
 
-import Logika.Dravec;
-import Logika.Misto;
-import Logika.Trava;
-
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -20,7 +18,8 @@ public class Engine {
      * @param sloupce
      * @return
      */
-    public ArrayList<ArrayList<Misto>> vytvorMapuPoli(int radky, int sloupce) {
+    public ArrayList<ArrayList<Misto>> vytvorMapuPoli(int radky, int sloupce, PrintWriter pw) {
+        Stack<Thread> zasobnik = new Stack<>();
         for (int i = 0; i < radky; i++) {
             ArrayList<Misto> pole1D = new ArrayList<>();
             for (int j = 0; j < sloupce; j++) {
@@ -30,34 +29,34 @@ public class Engine {
                     case 0:
                         pozice[0] = i;
                         pozice[1] = j;
-                        Korist korist = new Korist(pole2D, pozice);
-                        Thread t = new Thread(korist);
-                        t.start();
+                        Korist korist = new Korist(pole2D, pozice, pw);
+                        Thread vk = new Thread(korist);
                         pole1D.add(korist);
+                        zasobnik.push(vk);
                         break;
                     case 1:
                         pozice[0] = i;
                         pozice[1] = j;
-                        Trava trava = new Trava(pole2D, pozice);
-                        Thread v = new Thread(trava);
-                        v.start();
+                        Trava trava = new Trava(pole2D, pozice, pw);
+                        Thread vt = new Thread(trava);
                         pole1D.add(trava);
+                        zasobnik.push(vt);
                         break;
                     case 2:
                         pozice[0] = i;
                         pozice[1] = j;
-                        Dravec dravec = new Dravec(pole2D, pozice);
+                        Dravec dravec = new Dravec(pole2D, pozice, pw);
                         Thread vd = new Thread(dravec);
-                        vd.start();
                         pole1D.add(dravec);
+                        zasobnik.push(vd);
                         break;
                     case 3:
                         pozice[0] = i;
                         pozice[1] = j;
-                        Korist k = new Korist(pole2D, pozice);
-                        Thread vk = new Thread(k);
-                        vk.start();
+                        Korist k = new Korist(pole2D, pozice, pw);
+                        Thread vkk = new Thread(k);
                         pole1D.add(k);
+                        zasobnik.push(vkk);
                         break;
                     case 4:
                         pozice[0] = i;
@@ -68,6 +67,10 @@ public class Engine {
                 }
             }
             pole2D.add(pole1D);
+            while (!zasobnik.empty()){
+                zasobnik.peek().start();
+                zasobnik.pop();
+            }
         }
         return pole2D;
     }

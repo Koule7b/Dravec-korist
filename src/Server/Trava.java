@@ -1,7 +1,7 @@
-package Logika;
+package Server;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -10,9 +10,11 @@ public class Trava extends Misto implements Runnable{
     private int zivotnost = 5;
     private ArrayList<ArrayList<Misto>> list;
     private int[] pozice = new int[2];
-    public Trava(ArrayList<ArrayList<Misto>> list, int[] pozice){
+    private PrintWriter pw;
+    public Trava(ArrayList<ArrayList<Misto>> list, int[] pozice, PrintWriter pw){
         this.list = list;
         this.pozice = pozice;
+        this.pw = pw;
     }
 
     @Override

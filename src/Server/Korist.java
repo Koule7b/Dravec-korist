@@ -1,9 +1,7 @@
-package Logika;
+package Server;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.ObjDoubleConsumer;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -18,14 +16,16 @@ public class Korist extends Trava implements Runnable{
     private int neco = 9;
     private int zivotnost = 9;
     private boolean konecKola = false;
-    public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice){
-        super(list, pozice);
+    private PrintWriter pw;
+    public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice, PrintWriter pw){
+        super(list, pozice, pw);
         this.list = list;
         this.pozice = pozice;
+        this.pw = pw;
     }
     @Override
     public void run() {
-        Trava trava = new Trava(list, pozice);
+        Trava trava = new Trava(list, pozice, pw);
         while (Thread.currentThread().isAlive()) {
             synchronized (lock) {
                 rozhledniSe(list,trava);
@@ -53,8 +53,6 @@ public class Korist extends Trava implements Runnable{
                 //System.out.print(list.get(i).get(j)+" ");
                 //System.out.println(list);
                 if(!konecKola) {
-                    synchronized (lock2) {
-                        super.rozhledniSe();
                         // TODO: 27.12.16  předělat tyto podmínky, tak aby se provedla jen jedna z možností, nebo přehodit do switche
                         /**
                         if (list.get(i).get(j).getClass().equals(Misto.class)) {
@@ -70,7 +68,7 @@ public class Korist extends Trava implements Runnable{
                             snez(i, j);
                             konecKola = true;
                         }
-                    }
+
                 }
             }
         }
@@ -89,7 +87,6 @@ public class Korist extends Trava implements Runnable{
         Misto misto = list.get(x).get(y);
         list.get(x).set(y, this);
         list.get(pozice[0]).set(pozice[1], misto);
-        System.out.println(list);
     }
 
     /**
@@ -101,13 +98,13 @@ public class Korist extends Trava implements Runnable{
         int[] pom = new int[2];
         pom[0] = x;
         pom[1] = y;
-        Korist korist = new Korist(list, pom);
+        Korist korist = new Korist(list, pom, pw);
         Thread t = new Thread(korist);
         t.start();
         synchronized (lock) {
             list.get(x).set(y, korist);
+            System.out.println(list);
         }
-        System.out.println(list);
     }
 
     /**
@@ -118,12 +115,8 @@ public class Korist extends Trava implements Runnable{
     protected synchronized void snez(int x, int y){
         this.neco += list.get(x).get(y).getZivotnost();
         Misto misto = new Misto();
-        System.out.println(Thread.currentThread().getId()+" "+list);
-        synchronized (lock3){
-            list.get(x).set(y, misto);
-        }
-        System.out.println(Thread.currentThread().getId()+" "+list);
-        System.out.println(Thread.currentThread().getId()+" "+getZivotnost());
+        list.get(x).set(y, misto);
+        pw.println(list);
     }
 
     /**
