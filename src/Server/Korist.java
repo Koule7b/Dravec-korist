@@ -47,11 +47,8 @@ public class Korist extends Trava implements Runnable{
      * @param potrava
      */
     protected synchronized void rozhledniSe(ArrayList<ArrayList<Misto>> list, Trava potrava){
-        //System.out.println(Arrays.toString(pozice));
         for (int i = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); i <= (((pozice[0] + 1) < list.size())?(pozice[0]+1):(list.size()-1)); i++) {
             for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j <= (((pozice[1] + 1) < list.get(i).size())?(pozice[1]+1):(list.get(i).size()-1)); j++) {
-                //System.out.print(list.get(i).get(j)+" ");
-                //System.out.println(list);
                 if(!konecKola) {
                         // TODO: 27.12.16  předělat tyto podmínky, tak aby se provedla jen jedna z možností, nebo přehodit do switche
                         /**

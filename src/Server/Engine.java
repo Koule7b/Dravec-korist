@@ -11,7 +11,9 @@ import java.util.Stack;
 public class Engine {
     ArrayList<ArrayList<Misto>> pole2D = new ArrayList<>();
     Random ran = new Random();
+    public Engine(){
 
+    }
     /**
      * metoda vytvářející dvourozměrné pole náhodně rozmístěných dravců, míst, kořistí a trávy.
      * @param radky

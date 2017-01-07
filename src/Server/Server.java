@@ -1,6 +1,8 @@
 package Server;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -30,6 +32,10 @@ public class Server {
 }
 class Client implements Runnable{
     Socket socket;
+    private int sloupce;
+    private int radky;
+    ObjectOutputStream os;
+    ObjectInputStream is;
     public Client(Socket socket){
         this.socket = socket;
     }
@@ -38,6 +44,25 @@ class Client implements Runnable{
     public void run() {
         //Client.Okno okno = new Client.Okno();
         //okno.pustSe(socket);
+        try {
+            os = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println(socket.isClosed());
+            is = new ObjectInputStream(socket.getInputStream());
+            System.out.println(socket.isClosed());
+            Oba.Nastaveni nastaveni;
+            while ((nastaveni = (Oba.Nastaveni) is.readObject()) != null) {
+                System.out.println("hello");
+                System.out.println(nastaveni.toString());
+                System.out.println(nastaveni.getSirka());
+                System.out.println(nastaveni.getVyska());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("bla");
+            e.printStackTrace();
+        }
+        Engine engine = new Engine();
         // TODO: 06.01.17 spustit engine s nastavením, které client poslal Serveru.
         // TODO: 06.01.17 To znamená vytvořit něco jako socketInputReader, který dostane nastavení z okna.
         // TODO: 06.01.17 Poté co obdrží nastavení je předá Enginu a ten spustí simulaci.
