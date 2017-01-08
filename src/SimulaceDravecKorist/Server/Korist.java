@@ -32,7 +32,6 @@ public class Korist extends Trava implements Runnable, Serializable{
         Trava trava = new Trava(list, pozice, pw);
         while (Thread.currentThread().isAlive()) {
             if(neco == 0){
-                Thread.currentThread().interrupt();
                 Misto misto = new Misto();
                 list.get(pozice[0]).set(pozice[1], misto);
                 Zmena zmena = new Zmena(pozice[0], pozice[1], "misto");
@@ -41,6 +40,7 @@ public class Korist extends Trava implements Runnable, Serializable{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Thread.currentThread().interrupt();
             }
             rozhledniSe(list,trava);
             spi(1000);
@@ -128,8 +128,9 @@ public class Korist extends Trava implements Runnable, Serializable{
         Misto misto = new Misto();
         list.get(x).set(y, misto);
         Zmena zmena = new Zmena(x, y, "misto");
+        Object object = new Object();
         try {
-            pw.writeObject(zmena);
+            pw.writeObject(object);
         } catch (IOException e) {
             e.printStackTrace();
         }

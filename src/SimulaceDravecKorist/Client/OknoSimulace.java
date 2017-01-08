@@ -32,15 +32,20 @@ public class OknoSimulace extends JPanel {
                 polee = (ArrayList<ArrayList<String>>) object;
                 nacteno = true;
                 vykresliPole(g);
+                repaint();
                 //PrijemZmen prijemZmen = new PrijemZmen();
                 //Thread vProjemZmen = new Thread(prijemZmen);
                 //vProjemZmen.start();
             }else {
                 Object object = ois.readObject();
-                polee.get(((Zmena) object).getY()).set(((Zmena) object).getX(), ((Zmena) object).getZmenenoNa());
+                Zmena zmena = (Zmena) object;
+                System.out.println(zmena);
+                //polee.get(zmena.getY()).set(zmena.getX(), zmena.getZmenenoNa());
+                System.out.println(zmena.getY()+" "+zmena.getX()+" "+zmena.getZmenenoNa());
                 vykresliPole(g);
+
+                repaint();
             }
-            repaint();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 
 /**
  * Created by stepanmudra on 02.12.16.
+ * Třída, která je grafickým panelem.
+ * V tomto panelu se nastavuje vše potřebné ke spuštění simulace tj. velikost mapy a přibližné procentuální zastoupení
+ * prázdného místa, trávy, kořisti a dravců.
  */
 public class OknoNastaveni extends JPanel implements ActionListener{
     int radky;
