@@ -24,7 +24,7 @@ public class Zmena implements Serializable{
         return y;
     }
 
-    public Object getZmenenoNa() {
+    public String getZmenenoNa() {
         return zmenenoNa;
     }
 }

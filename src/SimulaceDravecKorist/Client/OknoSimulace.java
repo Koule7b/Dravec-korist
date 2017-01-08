@@ -32,18 +32,21 @@ public class OknoSimulace extends JPanel {
                 polee = (ArrayList<ArrayList<String>>) object;
                 nacteno = true;
                 vykresliPole(g);
+                //PrijemZmen prijemZmen = new PrijemZmen();
+                //Thread vProjemZmen = new Thread(prijemZmen);
+                //vProjemZmen.start();
             }else {
                 Object object = ois.readObject();
-                polee.get(((Zmena) object).getY()).set(((Zmena) object).getX(), String.valueOf(((Zmena) object).getZmenenoNa()));
+                polee.get(((Zmena) object).getY()).set(((Zmena) object).getX(), ((Zmena) object).getZmenenoNa());
                 vykresliPole(g);
-                repaint();
             }
+            repaint();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
 
         try {
@@ -77,7 +80,7 @@ public class OknoSimulace extends JPanel {
             y += okno.getHeight()/polee.size();
         }
     }
-    public void vykresliZmenu(Graphics g){
-        //g.fillRect();
+    public void setZmena(Zmena zmena){
+        polee.get(zmena.getY()).set(zmena.getX(), String.valueOf(zmena.getZmenenoNa()));
     }
 }

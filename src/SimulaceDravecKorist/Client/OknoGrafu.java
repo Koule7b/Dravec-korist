@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by stepanmudra on 07.01.17.
  */
-public class OknoGrafu extends JPanel {
+public class OknoGrafu extends JPanel{
     private Okno okno;
     private ObjectInputStream ois;
     private ArrayList<Integer> pocetMist = new ArrayList<>();
