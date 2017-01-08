@@ -1,4 +1,4 @@
-package Server;
+package SimulaceDravecKorist.Server;
 
 /**
  * Created by stepanmudra on 06.11.16.

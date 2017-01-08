@@ -1,10 +1,7 @@
-package Client;
+package SimulaceDravecKorist.Client;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created by stepanmudra on 14.12.16.
@@ -19,8 +16,8 @@ public class Okno extends JFrame{
         pack();
     }
     public void pustSe(){
-        NastaveniUzivatele nastaveniUzivatele = new NastaveniUzivatele(this);
-        this.add(nastaveniUzivatele);
+        OknoNastaveni oknoNastaveni = new OknoNastaveni(this);
+        this.add(oknoNastaveni);
         pack();
         setVisible(true);
     }

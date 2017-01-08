@@ -1,4 +1,4 @@
-package Client;
+package SimulaceDravecKorist.Client;
 
 /**
  * Created by stepanmudra on 06.01.17.

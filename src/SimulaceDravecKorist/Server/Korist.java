@@ -1,12 +1,16 @@
-package Server;
+package SimulaceDravecKorist.Server;
 
-import java.io.PrintWriter;
+import SimulaceDravecKorist.Zmena;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by stepanmudra on 19.11.16.
  */
-public class Korist extends Trava implements Runnable{
+public class Korist extends Trava implements Runnable, Serializable{
     private ArrayList<ArrayList<Misto>> list;
     private int[] pozice;
     private final Object lock = new Object();
@@ -16,8 +20,8 @@ public class Korist extends Trava implements Runnable{
     private int neco = 9;
     private int zivotnost = 9;
     private boolean konecKola = false;
-    private PrintWriter pw;
-    public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice, PrintWriter pw){
+    private ObjectOutputStream pw;
+    public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice, ObjectOutputStream pw){
         super(list, pozice, pw);
         this.list = list;
         this.pozice = pozice;
@@ -27,17 +31,19 @@ public class Korist extends Trava implements Runnable{
     public void run() {
         Trava trava = new Trava(list, pozice, pw);
         while (Thread.currentThread().isAlive()) {
-            synchronized (lock) {
-                rozhledniSe(list,trava);
-                //System.out.println(list);
-            }
-            //System.out.println("l");
             if(neco == 0){
-                //Thread.currentThread().destroy();
+                Thread.currentThread().interrupt();
+                Misto misto = new Misto();
+                list.get(pozice[0]).set(pozice[1], misto);
+                Zmena zmena = new Zmena(pozice[0], pozice[1], "misto");
+                try {
+                    pw.writeObject(zmena);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            konecKola = false;
-            //System.out.println("u");
-            spi();
+            rozhledniSe(list,trava);
+            spi(1000);
         }
     }
 
@@ -83,7 +89,15 @@ public class Korist extends Trava implements Runnable{
         pom[1] = y;
         Misto misto = list.get(x).get(y);
         list.get(x).set(y, this);
+        Zmena zmena = new Zmena(x, y, "korist");
         list.get(pozice[0]).set(pozice[1], misto);
+        Zmena zmena1 = new Zmena(pozice[0], pozice[1], "misto");
+        try {
+            pw.writeObject(zmena);
+            pw.writeObject(zmena1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -113,7 +127,12 @@ public class Korist extends Trava implements Runnable{
         this.neco += list.get(x).get(y).getZivotnost();
         Misto misto = new Misto();
         list.get(x).set(y, misto);
-        pw.println(list);
+        Zmena zmena = new Zmena(x, y, "misto");
+        try {
+            pw.writeObject(zmena);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

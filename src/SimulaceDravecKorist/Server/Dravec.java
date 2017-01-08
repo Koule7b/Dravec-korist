@@ -1,17 +1,18 @@
-package Server;
+package SimulaceDravecKorist.Server;
 
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by stepanmudra on 19.11.16.
  */
-public class Dravec extends Korist {
+public class Dravec extends Korist implements Runnable, Serializable{
     private ArrayList<ArrayList<Misto>> list;
     private int zivotnost;
     private int[] pozice;
-    private PrintWriter pw;
-    public Dravec(ArrayList<ArrayList<Misto>> list, int [] pozice, PrintWriter pw){
+    private ObjectOutputStream pw;
+    public Dravec(ArrayList<ArrayList<Misto>> list, int [] pozice, ObjectOutputStream pw){
         super(list, pozice, pw);
         this.list = list;
         this.pozice = pozice;
@@ -22,7 +23,7 @@ public class Dravec extends Korist {
         Korist korist = new Korist(list, pozice, pw);
         while (true) {
             rozhledniSe(list, korist);
-            spi();
+            spi(500);
         }
     }
     public int getZivotnost(){
