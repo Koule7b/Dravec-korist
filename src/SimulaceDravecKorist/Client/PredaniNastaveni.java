@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 
 /**
  * Created by stepanmudra on 07.01.17.
+ * Třída zajišťující předání nastavení z okna nastavení serveru.
  */
 public class PredaniNastaveni {
     Socket socket;

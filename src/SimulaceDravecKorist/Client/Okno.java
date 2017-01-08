@@ -5,6 +5,7 @@ import java.awt.*;
 
 /**
  * Created by stepanmudra on 14.12.16.
+ * Vytvoření okna.
  */
 public class Okno extends JFrame{
     public Okno(){

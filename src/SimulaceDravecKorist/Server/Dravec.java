@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Dravec extends Korist implements Runnable, Serializable{
     private ArrayList<ArrayList<Misto>> list;
-    private int zivotnost;
+    private int zivotnost = 5;
     private int[] pozice;
     private ObjectOutputStream pw;
     public Dravec(ArrayList<ArrayList<Misto>> list, int [] pozice, ObjectOutputStream pw){
@@ -21,12 +21,10 @@ public class Dravec extends Korist implements Runnable, Serializable{
     @Override
     public void run() {
         Korist korist = new Korist(list, pozice, pw);
-        while (true) {
+        while (zivotnost > 0) {
             rozhledniSe(list, korist);
             spi(500);
+            zivotnost--;
         }
-    }
-    public int getZivotnost(){
-        return zivotnost;
     }
 }

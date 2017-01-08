@@ -19,6 +19,12 @@ public class Engine {
         this.oos = oos;
     }
 
+    /**
+     * V této metodě probíhá celé nastavení simulace dle předaného nastavení v parametru.
+     * Nastavení ještě závisí na náhodě, proto říkám, že uživatelské nastavení je pouze přibližné.
+     * @param nastaveni
+     * @return
+     */
     public ArrayList<ArrayList<Misto>> vytvorMapuPoli(Nastaveni nastaveni) {
         Stack<Thread> zasobnik = new Stack<>();
         ArrayList<ArrayList<String>> polePopisku = new ArrayList<>();

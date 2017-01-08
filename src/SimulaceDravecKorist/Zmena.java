@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by stepanmudra on 06.01.17.
+ * Je objekt, který v sobě uchovává pozici políčka, na kterém proběhla změna a nápis ve stringu.
+ * Nápis říká, na co se hodnota přepsala.
  */
 public class Zmena implements Serializable{
     private int x;

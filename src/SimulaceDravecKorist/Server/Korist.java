@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -13,15 +14,11 @@ import java.util.ArrayList;
 public class Korist extends Trava implements Runnable, Serializable{
     private ArrayList<ArrayList<Misto>> list;
     private int[] pozice;
-    private final Object lock = new Object();
     private final Object lock2 = new Object();
-    private final Object lock3 = new Object();
-    private boolean stoji = false;
-    private int neco = 9;
     private int zivotnost = 9;
-    private boolean konecKola = false;
     private ObjectOutputStream pw;
     private boolean bezi;
+    private Random ran = new Random();
     public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice, ObjectOutputStream pw){
         super(list, pozice, pw);
         this.list = list;
@@ -38,7 +35,9 @@ public class Korist extends Trava implements Runnable, Serializable{
                 Zmena zmena = new Zmena(pozice[0], pozice[1], "misto");
                 try {
                     synchronized (lock2) {
+                        spi(1000);
                         pw.writeObject(zmena);
+                        System.out.println(zmena);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -59,26 +58,18 @@ public class Korist extends Trava implements Runnable, Serializable{
     protected synchronized void rozhledniSe(ArrayList<ArrayList<Misto>> list, Trava potrava){
         for (int i = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); i <= (((pozice[0] + 1) < list.size())?(pozice[0]+1):(list.size()-1)); i++) {
             for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j <= (((pozice[1] + 1) < list.get(i).size())?(pozice[1]+1):(list.get(i).size()-1)); j++) {
-                if(!konecKola) {
-                        /**
-                        if (list.get(i).get(j).getClass().equals(Misto.class)) {
-                            //System.out.println();
-                            //System.out.print(list.get(i).get(j)+" ");
-                            //System.out.println();
-                            //presunSe(i, j);
-                            //rozmnozSe(i, j);
-                            konecKola = true;
-                        }
-                         */
-                        if (list.get(i).get(j).getClass().equals(potrava.getClass())) {
-                            snez(i, j);
-                            konecKola = true;
-                        }
-
+                if (list.get(i).get(j).getClass().equals(potrava.getClass())) {
+                    snez(i, j);
+                }else if(list.get(i).get(j).getClass().equals(Misto.class)){
+                    if((ran.nextInt(5) + 1) == 1){
+                        rozmnozSe(i, j);
+                    }else {
+                        presunSe(i, j);
+                    }
                 }
+
             }
         }
-        this.neco--;
     }
 
     /**
@@ -96,8 +87,10 @@ public class Korist extends Trava implements Runnable, Serializable{
         list.get(pozice[0]).set(pozice[1], misto);
         Zmena zmena1 = new Zmena(pozice[0], pozice[1], "misto");
         try {
+            spi(1000);
             pw.writeObject(zmena);
             pw.writeObject(zmena1);
+            System.out.println(zmena+" "+zmena1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,9 +108,7 @@ public class Korist extends Trava implements Runnable, Serializable{
         Korist korist = new Korist(list, pom, pw);
         Thread t = new Thread(korist);
         t.start();
-        synchronized (lock) {
-            list.get(x).set(y, korist);
-        }
+        list.get(x).set(y, korist);
     }
 
     /**
@@ -134,13 +125,5 @@ public class Korist extends Trava implements Runnable, Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * metoda, která vrací zbývající "kola".
-     * @return
-     */
-    public int getZivotnost() {
-        return neco;
     }
 }

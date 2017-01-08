@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by stepanmudra on 06.01.17.
+ * Třída ve které je uloženo počáteční nastavení simulace. Předá se Enginu pro vytvoření simulace dle nastavení.
  */
 public class Nastaveni implements Serializable{
     private int sirka;

@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 /**
  * Created by stepanmudra on 07.01.17.
+ * Třída, která zajišťuje naplnění okna simulací.
  */
 public class OknoSimulace extends JPanel {
     private Okno okno;
     private ObjectInputStream ois;
     private ArrayList<ArrayList<String>> polee = new ArrayList<>();
-    private ArrayList<Zmena> zmenList = new ArrayList<>();
     boolean nacteno = false;
     public OknoSimulace(Okno okno, ObjectInputStream ois){
         this.ois = ois;
@@ -26,18 +26,14 @@ public class OknoSimulace extends JPanel {
         super.paintComponent(g);
         this.setPreferredSize(new Dimension(okno.getWidth(), okno.getHeight()));
         try {
+            Object object = ois.readObject();
             if(!nacteno) {
-                Object object = ois.readObject();
                 System.out.println(object);
-                polee = (ArrayList<ArrayList<String>>) object;
+                this.polee = (ArrayList<ArrayList<String>>) object;
                 nacteno = true;
                 vykresliPole(g);
                 repaint();
-                //PrijemZmen prijemZmen = new PrijemZmen();
-                //Thread vProjemZmen = new Thread(prijemZmen);
-                //vProjemZmen.start();
             }else {
-                Object object = ois.readObject();
                 if(object != null) {
                     Zmena zmena = (Zmena) object;
                     System.out.println(zmena);
@@ -45,14 +41,20 @@ public class OknoSimulace extends JPanel {
                     System.out.println(zmena.getY() + " " + zmena.getX() + " " + zmena.getZmenenoNa());
                     vykresliPole(g);
                     repaint();
+                }else {
+                    vykresliPole(g);
+                    repaint();
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            vykresliPole(g);
+            repaint();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            vykresliPole(g);
+            repaint();
         }catch (Exception e){
-            e.printStackTrace();
+            vykresliPole(g);
+            repaint();
         }
     }
     public void vykresliPole(Graphics g){
@@ -79,8 +81,5 @@ public class OknoSimulace extends JPanel {
             x = 0;
             y += okno.getHeight()/polee.size();
         }
-    }
-    public void setZmena(Zmena zmena){
-        polee.get(zmena.getY()).set(zmena.getX(), String.valueOf(zmena.getZmenenoNa()));
     }
 }

@@ -20,19 +20,14 @@ public class Trava extends Misto implements Runnable, Serializable{
 
     @Override
     public void run() {
-        while(zivotnost != 0){
-            this.zivotnost -= 1;
+        while (zivotnost > 0) {
             spi(10000);
+            zivotnost--;
         }
-        /**
-        Thread.currentThread().interrupt();
-        Misto misto = new Misto();
-        list.get(pozice[0]).set(pozice[1], misto);
-         */
     }
 
     /**
-     * metoda která uspí vlákno na vteřinu
+     * metoda která uspí vlákno na určitý čas předaný parametrem
      */
     protected void spi(int cas){
         try {
@@ -42,8 +37,5 @@ public class Trava extends Misto implements Runnable, Serializable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-    public int getZivotnost() {
-        return zivotnost;
     }
 }
