@@ -21,6 +21,7 @@ public class Korist extends Trava implements Runnable, Serializable{
     private int zivotnost = 9;
     private boolean konecKola = false;
     private ObjectOutputStream pw;
+    private boolean bezi;
     public Korist(ArrayList<ArrayList<Misto>> list, int[] pozice, ObjectOutputStream pw){
         super(list, pozice, pw);
         this.list = list;
@@ -28,22 +29,25 @@ public class Korist extends Trava implements Runnable, Serializable{
         this.pw = pw;
     }
     @Override
-    public void run() {
+    public  void run() {
         Trava trava = new Trava(list, pozice, pw);
-        while (Thread.currentThread().isAlive()) {
-            if(neco == 0){
+        while (bezi) {
+            if(zivotnost == 0){
                 Misto misto = new Misto();
                 list.get(pozice[0]).set(pozice[1], misto);
                 Zmena zmena = new Zmena(pozice[0], pozice[1], "misto");
                 try {
-                    pw.writeObject(zmena);
+                    synchronized (lock2) {
+                        pw.writeObject(zmena);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Thread.currentThread().interrupt();
+                bezi = false;
             }
             rozhledniSe(list,trava);
             spi(1000);
+            zivotnost--;
         }
     }
 
@@ -56,7 +60,6 @@ public class Korist extends Trava implements Runnable, Serializable{
         for (int i = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); i <= (((pozice[0] + 1) < list.size())?(pozice[0]+1):(list.size()-1)); i++) {
             for (int j = ((pozice[0] - 1) < 0) ? 0 : (pozice[0] - 1); j <= (((pozice[1] + 1) < list.get(i).size())?(pozice[1]+1):(list.get(i).size()-1)); j++) {
                 if(!konecKola) {
-                        // TODO: 27.12.16  předělat tyto podmínky, tak aby se provedla jen jedna z možností, nebo přehodit do switche
                         /**
                         if (list.get(i).get(j).getClass().equals(Misto.class)) {
                             //System.out.println();
@@ -114,7 +117,6 @@ public class Korist extends Trava implements Runnable, Serializable{
         t.start();
         synchronized (lock) {
             list.get(x).set(y, korist);
-            System.out.println(list);
         }
     }
 
@@ -124,13 +126,11 @@ public class Korist extends Trava implements Runnable, Serializable{
      * @param y
      */
     protected synchronized void snez(int x, int y){
-        this.neco += list.get(x).get(y).getZivotnost();
         Misto misto = new Misto();
         list.get(x).set(y, misto);
         Zmena zmena = new Zmena(x, y, "misto");
-        Object object = new Object();
         try {
-            pw.writeObject(object);
+            pw.writeObject(zmena);
         } catch (IOException e) {
             e.printStackTrace();
         }
