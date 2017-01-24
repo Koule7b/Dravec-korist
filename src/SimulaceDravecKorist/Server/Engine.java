@@ -1,12 +1,11 @@
 package SimulaceDravecKorist.Server;
 
-import SimulaceDravecKorist.Nastaveni;
+import SimulaceDravecKorist.Prikaz;
+import SimulaceDravecKorist.Server.DruhyJedincu.Misto;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
 /**
  * Created by stepanmudra on 19.11.16.
@@ -25,7 +24,8 @@ public class Engine {
      * @param nastaveni
      * @return
      */
-    public ArrayList<ArrayList<Misto>> vytvorMapuPoli(Nastaveni nastaveni) {
+    public ArrayList<ArrayList<Misto>> vytvorMapuPoli(Prikaz nastaveni) {
+        /**
         Stack<Thread> zasobnik = new Stack<>();
         ArrayList<ArrayList<String>> polePopisku = new ArrayList<>();
         int radky = nastaveni.getVyska();
@@ -84,5 +84,7 @@ public class Engine {
             zasobnik.pop();
         }
         return pole2D;
+         */
+        return null;
     }
 }

@@ -1,6 +1,6 @@
-package SimulaceDravecKorist.Server;
+package SimulaceDravecKorist.Server.DruhyJedincu;
 
-import SimulaceDravecKorist.Zmena;
+import SimulaceDravecKorist.Bod;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -32,12 +32,12 @@ public class Korist extends Trava implements Runnable, Serializable{
             if(zivotnost == 0){
                 Misto misto = new Misto();
                 list.get(pozice[0]).set(pozice[1], misto);
-                Zmena zmena = new Zmena(pozice[0], pozice[1], "misto");
+                Bod bod = new Bod(pozice[0], pozice[1], Bod.StavBodu.PRAZDNO);
                 try {
                     synchronized (lock2) {
                         spi(1000);
-                        pw.writeObject(zmena);
-                        System.out.println(zmena);
+                        pw.writeObject(bod);
+                        System.out.println(bod);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -83,14 +83,14 @@ public class Korist extends Trava implements Runnable, Serializable{
         pom[1] = y;
         Misto misto = list.get(x).get(y);
         list.get(x).set(y, this);
-        Zmena zmena = new Zmena(x, y, "korist");
+        Bod bod = new Bod(x, y, Bod.StavBodu.KORIST);
         list.get(pozice[0]).set(pozice[1], misto);
-        Zmena zmena1 = new Zmena(pozice[0], pozice[1], "misto");
+        Bod bod1 = new Bod(pozice[0], pozice[1], Bod.StavBodu.PRAZDNO);
         try {
             spi(1000);
-            pw.writeObject(zmena);
-            pw.writeObject(zmena1);
-            System.out.println(zmena+" "+zmena1);
+            pw.writeObject(bod);
+            pw.writeObject(bod1);
+            System.out.println(bod +" "+ bod1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,9 +119,9 @@ public class Korist extends Trava implements Runnable, Serializable{
     protected synchronized void snez(int x, int y){
         Misto misto = new Misto();
         list.get(x).set(y, misto);
-        Zmena zmena = new Zmena(x, y, "misto");
+        Bod bod = new Bod(x, y, Bod.StavBodu.PRAZDNO);
         try {
-            pw.writeObject(zmena);
+            pw.writeObject(bod);
         } catch (IOException e) {
             e.printStackTrace();
         }

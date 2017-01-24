@@ -1,7 +1,5 @@
 package SimulaceDravecKorist.Client;
 
-import SimulaceDravecKorist.Nastaveni;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,13 +110,13 @@ public class OknoNastaveni extends JPanel implements ActionListener{
                 int travy = Integer.valueOf(procentoTrav.getText());
                 int koristi = Integer.valueOf(procentoKoristi.getText());
                 int dravci = Integer.valueOf(procentoDravcu.getText());
-                Nastaveni nastaveni = new Nastaveni(sii, vyy, mista, travy, koristi, dravci);
-                this.requestFocus(false);
+                //Nastaveni nastaveni = new Nastaveni(sii, vyy, mista, travy, koristi, dravci);
+                //this.requestFocus(false);
                 this.setVisible(false);
                 okno.remove(this);
-                PredaniNastaveni predaniNastaveni = new PredaniNastaveni(nastaveni, okno);
-                predaniNastaveni.predejObjekt();
-                System.out.println(nastaveni);
+                //PredaniNastaveni predaniNastaveni = new PredaniNastaveni(nastaveni, okno);
+                //predaniNastaveni.predejObjekt();
+                //System.out.println(nastaveni);
         }
     }
     public void paintComponent(Graphics g){

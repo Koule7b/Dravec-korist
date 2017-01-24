@@ -1,4 +1,4 @@
-package SimulaceDravecKorist.Server;
+package SimulaceDravecKorist.Server.DruhyJedincu;
 
 import java.io.Serializable;
 

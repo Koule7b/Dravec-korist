@@ -7,15 +7,15 @@ import java.io.Serializable;
  * Je objekt, který v sobě uchovává pozici políčka, na kterém proběhla změna a nápis ve stringu.
  * Nápis říká, na co se hodnota přepsala.
  */
-public class Zmena implements Serializable{
+public class Bod implements Serializable{
     private int x;
     private int y;
-    private String zmenenoNa;
+    private StavBodu stav;
 
-    public Zmena(int x, int y, String zmenenoNa) {
+    public Bod(int x, int y, StavBodu stav) {
         this.x = x;
         this.y = y;
-        this.zmenenoNa = zmenenoNa;
+        this.stav = stav;
     }
 
     public int getX() {
@@ -26,7 +26,13 @@ public class Zmena implements Serializable{
         return y;
     }
 
-    public String getZmenenoNa() {
-        return zmenenoNa;
+    public StavBodu getStav() {
+        return stav;
+    }
+    public enum StavBodu{
+        PRAZDNO,
+        TRAVA,
+        KORIST,
+        DRAVEC
     }
 }
