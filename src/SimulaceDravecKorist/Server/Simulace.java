@@ -30,6 +30,7 @@ public class Simulace implements Runnable {
 
     Random random = new Random();
     ArrayList<Prazdno> seznamJedincu = new ArrayList<>();
+    ArrayList<Prazdno> novySeznamJedincu = new ArrayList<>();
     private boolean pozastaveno = false;
 
     public Simulace(int pocetRadku, int pocetSloupcu, int procentaDravcu, int procentaKoristi, int procentaTravy, int procentaPrazdnehoMista) {
@@ -75,12 +76,13 @@ public class Simulace implements Runnable {
                     e.printStackTrace();
                 }
             }
-            ListIterator<Prazdno> iterator = seznamJedincu.listIterator();
-            while (iterator.hasNext()) {
-                Prazdno jedinec = iterator.next();
-                rozhledniSe(iterator, jedinec);
-                overZivotnost(iterator, jedinec);
+            novySeznamJedincu = seznamJedincu;
+            for (int i = 0; i < seznamJedincu.size(); i++){
+                Prazdno jedinec = seznamJedincu.get(i);
+                rozhledniSe(jedinec);
+                overZivotnost(jedinec, i);
             }
+            this.seznamJedincu = novySeznamJedincu;
 
             try {
                 Thread.currentThread().sleep(1000);
@@ -100,7 +102,7 @@ public class Simulace implements Runnable {
         }
     }
 
-    private void rozhledniSe(ListIterator<Prazdno> iterator, Prazdno jedinec) {
+    private void rozhledniSe(Prazdno jedinec) {
         ListIterator<Prazdno> okoli;
         int pocetNaX = seznamJedincu.get(seznamJedincu.size() - 1).getX() + 1;
         int pocetNaY = seznamJedincu.get(seznamJedincu.size() - 1).getY() + 1;
@@ -131,10 +133,10 @@ public class Simulace implements Runnable {
                     int yJedince = jedinec.getY();
                     Random random = new Random();
                     if(random.nextInt(6) % 5 == 0){
-                        iterator.set(new Korist(seznamJedincu.get(i).getX(), seznamJedincu.get(i).getY()));
+                        novySeznamJedincu.set(i, new Korist(seznamJedincu.get(i).getX(), seznamJedincu.get(i).getY()));
                     }else {
-                        seznamJedincu.set(i, jedinec);
-                        iterator.set(new Prazdno(xJedince, yJedince));
+                        novySeznamJedincu.set(i, jedinec);
+                        novySeznamJedincu.set(indexJedince, new Prazdno(xJedince, yJedince));
                         return;
                     }
 
@@ -145,13 +147,13 @@ public class Simulace implements Runnable {
                 if(seznamJedincu.get(i) instanceof Korist){
                     int x = seznamJedincu.get(i).getX();
                     int y = seznamJedincu.get(i).getY();
-                    seznamJedincu.set(i, new Prazdno(x, y));
+                    novySeznamJedincu.set(i, new Prazdno(x, y));
                     return;
                 }else if(random.nextInt(5) % 3 == 0){
                     int xJedince = jedinec.getX();
                     int yJedince = jedinec.getY();
-                    seznamJedincu.set(i, jedinec);
-                    iterator.set(new Prazdno(xJedince, yJedince));
+                    novySeznamJedincu.set(i, jedinec);
+                    novySeznamJedincu.set(indexJedince, new Prazdno(xJedince, yJedince));
                 }
             }
         }else if(jedinec instanceof Trava){
@@ -159,19 +161,18 @@ public class Simulace implements Runnable {
                 if(random.nextInt(5) % 3 == 0){
                     int xJedince = seznamJedincu.get(i).getX();
                     int yJedince = seznamJedincu.get(i).getY();
-                    seznamJedincu.set(i, new Trava(xJedince, yJedince));
-                    iterator.set(new Prazdno(xJedince, yJedince));
+                    novySeznamJedincu.set(indexJedince, new Trava(xJedince, yJedince));
                 }
             }
         }
     }
 
-    private void overZivotnost(ListIterator<Prazdno> iterator, Prazdno jedinec) {
+    private void overZivotnost(Prazdno jedinec, int i) {
         if (jedinec instanceof Trava) {
             Trava trava = (Trava) jedinec;
             int dalsiCykly = trava.getPocetNasledujcichCyklu();
             if (dalsiCykly == 0) {
-                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+                novySeznamJedincu.set(i, new Prazdno(jedinec.getX(), jedinec.getY()));
             }
             dalsiCykly--;
             trava.setPocetNasledujcichCyklu(dalsiCykly);
@@ -179,7 +180,7 @@ public class Simulace implements Runnable {
             Dravec dravec = (Dravec) jedinec;
             int dalsiCykly = dravec.getPocetNasledujcichCyklu();
             if (dalsiCykly == 0) {
-                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+                novySeznamJedincu.set(i ,new Prazdno(jedinec.getX(), jedinec.getY()));
             }
             dalsiCykly--;
             dravec.setPocetNasledujcichCyklu(dalsiCykly);
@@ -187,7 +188,7 @@ public class Simulace implements Runnable {
             Korist korist = (Korist)jedinec;
             int dalsiCykly = korist.getPocetNasledujcichCyklu();
             if (dalsiCykly == 0) {
-                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+                novySeznamJedincu.set(i, new Prazdno(jedinec.getX(), jedinec.getY()));
             }
             dalsiCykly--;
             korist.setPocetNasledujcichCyklu(dalsiCykly);

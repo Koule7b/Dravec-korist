@@ -54,10 +54,10 @@ public class Client implements Runnable {
                         );
                         break;
                     case PAUZA:
-                        handlePuse();
+                        pauza();
                         break;
                     case CONTINUE:
-                        handleContinue();
+                        pokracuj();
                         break;
                 }
 
@@ -103,11 +103,11 @@ public class Client implements Runnable {
         }
     }
 
-    public void handlePuse() {
+    public void pauza() {
         simulace.pauza();
     }
 
-    public void handleContinue() {
+    public void pokracuj() {
         simulace.notifyAll();
     }
 

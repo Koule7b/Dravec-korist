@@ -32,16 +32,14 @@ public class OknoProSimulaci extends JFrame{
         hlavniPanel.setLayout(new BorderLayout());
 
         this.panelSimulace = new ComponentSimulace(pocetBoduNaSirku, pocetBoduNaVysku);
-        //this.panelSimulace = new JPanel();
-        //panelSimulace.setBackground(Color.yellow);
         hlavniPanel.setBorder(new EmptyBorder(10, 13, 10, 10));
         panelSimulace.setMinimumSize(new Dimension(500, 500));
         panelSimulace.setPreferredSize(new Dimension(500, 500));
         hlavniPanel.add(panelSimulace, BorderLayout.CENTER);
-        JPanel panelTlacitek = new JPanel();
-        panelTlacitek.add(spustit);
-        panelTlacitek.add(pauza);
-        hlavniPanel.add(panelTlacitek, BorderLayout.PAGE_END);
+        //JPanel panelTlacitek = new JPanel();
+        //panelTlacitek.add(spustit);
+        //panelTlacitek.add(pauza);
+        //hlavniPanel.add(panelTlacitek, BorderLayout.PAGE_END);
         this.add(hlavniPanel);
         pack();
         setVisible(true);

@@ -21,7 +21,6 @@ public class Server {
         ) {
             while(true){
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("připojejí z "+clientSocket.getLocalAddress().getHostName());
                 Client simulace = new Client(clientSocket);
                 Thread v = new Thread(simulace);
                 v.start();
