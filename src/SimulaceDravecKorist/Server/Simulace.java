@@ -78,32 +78,8 @@ public class Simulace implements Runnable {
             ListIterator<Prazdno> iterator = seznamJedincu.listIterator();
             while (iterator.hasNext()) {
                 Prazdno jedinec = iterator.next();
-
-                if (jedinec instanceof Trava) {
-                    Trava trava = (Trava) jedinec;
-                    int dalsiCykly = trava.getPocetNasledujcichCyklu();
-                    if (dalsiCykly == 0) {
-                        iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
-                    }
-                    dalsiCykly--;
-                    trava.setPocetNasledujcichCyklu(dalsiCykly);
-                } else if (jedinec instanceof Dravec) {
-                    Dravec dravec = (Dravec) jedinec;
-                    int dalsiCykly = dravec.getPocetNasledujcichCyklu();
-                    if (dalsiCykly == 0) {
-                        iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
-                    }
-                    dalsiCykly--;
-                    dravec.setPocetNasledujcichCyklu(dalsiCykly);
-                } else if (jedinec instanceof Korist) {
-                    Korist korist = (Korist)jedinec;
-                    int dalsiCykly = korist.getPocetNasledujcichCyklu();
-                    if (dalsiCykly == 0) {
-                        iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
-                    }
-                    dalsiCykly--;
-                    korist.setPocetNasledujcichCyklu(dalsiCykly);
-                }
+                rozhledniSe(iterator, jedinec);
+                overZivotnost(iterator, jedinec);
             }
 
             try {
@@ -121,6 +97,54 @@ public class Simulace implements Runnable {
 
             }
             client.odesliStav(getSeznamBodu());
+        }
+    }
+
+    private void rozhledniSe(ListIterator<Prazdno> iterator, Prazdno jedinec) {
+        ListIterator<Prazdno> okoli;
+        int x = jedinec.getX();
+        int y = jedinec.getX();
+        int pocetNaX = seznamJedincu.get(seznamJedincu.size() - 1).getX() + 1;
+        int yHranice= seznamJedincu.get(seznamJedincu.size() - 1).getY();
+        int[][] souradniceDravcu;
+        int[][] souradniceKoristi;
+        int[][] souradniceTravy;
+        int indexJedince = pocetNaX * jedinec.getY() + jedinec.getY();
+        System.out.println(indexJedince);
+        int moznyPocatecniIndex = indexJedince - (pocetNaX + 1);
+        int pocatecniIndex = moznyPocatecniIndex < 0 ? 0 : moznyPocatecniIndex;
+        System.out.println(pocatecniIndex);
+        //for (int i = ((x - 1) < 0) ? 0 : (x - 1); i <= (((x + 1) < xHranice)?(x + 1): xHranice); i++) {
+            //for (int j = ((y - 1) < 0) ? 0 : (y - 1); i <= (((y + 1) < yHranice)?(x + 1): yHranice); j++) {
+            //}
+        //}
+    }
+
+    private void overZivotnost(ListIterator<Prazdno> iterator, Prazdno jedinec) {
+        if (jedinec instanceof Trava) {
+            Trava trava = (Trava) jedinec;
+            int dalsiCykly = trava.getPocetNasledujcichCyklu();
+            if (dalsiCykly == 0) {
+                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+            }
+            dalsiCykly--;
+            trava.setPocetNasledujcichCyklu(dalsiCykly);
+        } else if (jedinec instanceof Dravec) {
+            Dravec dravec = (Dravec) jedinec;
+            int dalsiCykly = dravec.getPocetNasledujcichCyklu();
+            if (dalsiCykly == 0) {
+                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+            }
+            dalsiCykly--;
+            dravec.setPocetNasledujcichCyklu(dalsiCykly);
+        } else if (jedinec instanceof Korist) {
+            Korist korist = (Korist)jedinec;
+            int dalsiCykly = korist.getPocetNasledujcichCyklu();
+            if (dalsiCykly == 0) {
+                iterator.set(new Prazdno(jedinec.getX(), jedinec.getY()));
+            }
+            dalsiCykly--;
+            korist.setPocetNasledujcichCyklu(dalsiCykly);
         }
     }
 

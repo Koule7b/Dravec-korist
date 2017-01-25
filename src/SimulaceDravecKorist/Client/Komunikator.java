@@ -36,10 +36,13 @@ public class Komunikator implements Runnable{
                 frontaStavu.putLast(seznamBodu);
                 System.out.println("prijal jsem zmenu");
             } catch (IOException e) {
+                uzavriSocket();
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
+                uzavriSocket();
                 e.printStackTrace();
             } catch (InterruptedException e) {
+                uzavriSocket();
                 e.printStackTrace();
             }
         }
@@ -47,6 +50,15 @@ public class Komunikator implements Runnable{
     public void odesliPrikaz(Prikaz prikaz){
         try {
             outputStream.writeObject(prikaz);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void uzavriSocket(){
+        try {
+            outputStream.close();
+            inputStream.close();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
