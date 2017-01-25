@@ -147,6 +147,20 @@ public class Simulace implements Runnable {
                     int y = seznamJedincu.get(i).getY();
                     seznamJedincu.set(i, new Prazdno(x, y));
                     return;
+                }else if(random.nextInt(5) % 3 == 0){
+                    int xJedince = jedinec.getX();
+                    int yJedince = jedinec.getY();
+                    seznamJedincu.set(i, jedinec);
+                    iterator.set(new Prazdno(xJedince, yJedince));
+                }
+            }
+        }else if(jedinec instanceof Trava){
+            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
+                if(random.nextInt(5) % 3 == 0){
+                    int xJedince = seznamJedincu.get(i).getX();
+                    int yJedince = seznamJedincu.get(i).getY();
+                    seznamJedincu.set(i, new Trava(xJedince, yJedince));
+                    iterator.set(new Prazdno(xJedince, yJedince));
                 }
             }
         }
