@@ -29,6 +29,11 @@ public class Bod implements Serializable{
     public StavBodu getStav() {
         return stav;
     }
+
+    public void setStav(StavBodu stav) {
+        this.stav = stav;
+    }
+
     public enum StavBodu{
         PRAZDNO,
         TRAVA,

@@ -22,6 +22,7 @@ public class Nastaveni extends JFrame {
 
     public Nastaveni() {
         super();
+        setTitle("Nastavení simulace.");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(jPanel);
 
@@ -35,23 +36,26 @@ public class Nastaveni extends JFrame {
                     System.out.println("heh");
                     int vyskaInt = Integer.valueOf(vyska.getText());
                     int sirkaInt = Integer.valueOf(sirka.getText());
-                    // TODO: 24.01.17 dodelat
+                    int procentoDravcu = Integer.valueOf(dravci.getText());
+                    int procentoKoristi = Integer.valueOf(korist.getText());
+                    int procentoTravy = Integer.valueOf(trava.getText());
+                    int procentoPrazdna = Integer.valueOf(prazdnyMisto.getText());
                     Komunikator komunikator = new Komunikator("127.0.0.1", 23456);
                     new Thread(komunikator).start();
                     Prikaz prikaz = new Prikaz(Prikaz.Typ.NASTAVENI);
                     prikaz.pridatParametr("pocetRadku", vyskaInt);
                     prikaz.pridatParametr("pocetSloupcu", sirkaInt);
-                    prikaz.pridatParametr("procentaDravcu", 25);
-                    prikaz.pridatParametr("procentaKoristi", 25);
-                    prikaz.pridatParametr("procentaTravy", 25);
-                    prikaz.pridatParametr("procentaPrazdnehoMista", 25);
+                    prikaz.pridatParametr("procentaDravcu", procentoDravcu);
+                    prikaz.pridatParametr("procentaKoristi", procentoKoristi);
+                    prikaz.pridatParametr("procentaTravy", procentoTravy);
+                    prikaz.pridatParametr("procentaPrazdnehoMista", procentoPrazdna);
                     komunikator.odesliPrikaz(prikaz);
-                    OknoProSimulaci oknoSimulace = new OknoProSimulaci(komunikator, vyskaInt, sirkaInt);
+                    new OknoProSimulaci(komunikator, vyskaInt, sirkaInt);
                     dispose();
                 } else if (tlacitko.equals("Zrušit")) {
                     System.out.println(dravci.getText());
                     System.out.println("bla");
-                    dispose();
+                    System.exit(0);
                 }
             }
         };

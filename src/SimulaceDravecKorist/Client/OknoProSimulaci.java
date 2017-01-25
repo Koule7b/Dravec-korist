@@ -22,6 +22,7 @@ public class OknoProSimulaci extends JFrame{
 
     public OknoProSimulaci(Komunikator komunikator, int pocetBoduNaVysku, int pocetBoduNaSirku){
 
+        setTitle("Simulace: dravec-kořist");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         this.komunikator = komunikator;

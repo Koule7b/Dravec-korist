@@ -17,7 +17,7 @@ public class Komunikator implements Runnable{
     Socket socket;
     ObjectOutputStream outputStream;
     ObjectInputStream inputStream;
-    private LinkedBlockingDeque<ArrayList<Bod>> frontaStavu;
+    private LinkedBlockingDeque<ArrayList<Bod>> frontaStavu  = new LinkedBlockingDeque<>();
 
     public Komunikator(String hostName, int portNumber){
         try {
@@ -34,6 +34,7 @@ public class Komunikator implements Runnable{
             try {
                 ArrayList<Bod> seznamBodu = (ArrayList<Bod>) inputStream.readObject();
                 frontaStavu.putLast(seznamBodu);
+                System.out.println("prijal jsem zmenu");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

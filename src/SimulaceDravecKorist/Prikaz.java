@@ -24,6 +24,6 @@ public class Prikaz implements Serializable{
     }
 
     public enum Typ{
-     NASTAVENI
+        PAUZA, CONTINUE, NASTAVENI
  }
 }
