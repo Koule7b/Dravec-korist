@@ -59,7 +59,7 @@ public class Simulace implements Runnable {
     public void run() {
         System.out.println("Simulace se spustila");
         vytvoreniPole();
-        novySeznamJedincu = (Prazdno[]) starySeznamJedincu.toArray();
+        novySeznamJedincu = starySeznamJedincu.stream().toArray(Prazdno[]::new);
         client.odesliStav(getSeznamBodu());
 
         try {
