@@ -7,7 +7,6 @@ import SimulaceDravecKorist.Server.Druhy.Prazdno;
 import SimulaceDravecKorist.Server.Druhy.Trava;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Random;
 
 /**
@@ -29,7 +28,7 @@ public class Simulace implements Runnable {
     boolean simulaceBezi = true;
 
     Random random = new Random();
-    ArrayList<Prazdno> seznamJedincu = new ArrayList<>();
+    ArrayList<Prazdno> starySeznamJedincu = new ArrayList<>();
     ArrayList<Prazdno> novySeznamJedincu = new ArrayList<>();
     private boolean pozastaveno = false;
 
@@ -76,13 +75,13 @@ public class Simulace implements Runnable {
                     e.printStackTrace();
                 }
             }
-            novySeznamJedincu = seznamJedincu;
-            for (int i = 0; i < seznamJedincu.size(); i++){
-                Prazdno jedinec = seznamJedincu.get(i);
+            novySeznamJedincu = starySeznamJedincu;
+            for (int i = 0; i < starySeznamJedincu.size(); i++){
+                Prazdno jedinec = starySeznamJedincu.get(i);
                 rozhledniSe(jedinec);
                 overZivotnost(jedinec, i);
             }
-            this.seznamJedincu = novySeznamJedincu;
+            this.starySeznamJedincu = novySeznamJedincu;
 
             try {
                 Thread.currentThread().sleep(1000);
@@ -91,7 +90,7 @@ public class Simulace implements Runnable {
             }
 
             mrtvo = true;
-            for (Prazdno o : seznamJedincu) {
+            for (Prazdno o : starySeznamJedincu) {
                 if (o instanceof Korist || o instanceof Dravec) {
                     mrtvo = false;
                     break;
@@ -103,9 +102,8 @@ public class Simulace implements Runnable {
     }
 
     private void rozhledniSe(Prazdno jedinec) {
-        ListIterator<Prazdno> okoli;
-        int pocetNaX = seznamJedincu.get(seznamJedincu.size() - 1).getX() + 1;
-        int pocetNaY = seznamJedincu.get(seznamJedincu.size() - 1).getY() + 1;
+        int pocetNaX = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getX() + 1;
+        int pocetNaY = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getY() + 1;
         int indexJedince = pocetNaX * jedinec.getX() + jedinec.getY();
         int moznyPocatecniIndex = indexJedince - pocetNaX - 1;
         int pocatecniIndex = moznyPocatecniIndex < 0 ? 0 : moznyPocatecniIndex;
@@ -117,23 +115,23 @@ public class Simulace implements Runnable {
             int strach = korist.getStrach();
             korist.setHlad((hlad + 1));
                 for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                    if (seznamJedincu.get(i) instanceof Dravec) {
+                    if (starySeznamJedincu.get(i) instanceof Dravec) {
                         korist.setStrach((strach + 1));
                     }
                 }
             for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                int x = seznamJedincu.get(i).getX();
-                int y = seznamJedincu.get(i).getY();
-                if(seznamJedincu.get(i) instanceof Trava && hlad >= strach){
-                    seznamJedincu.set(i, new Prazdno(x, y));
+                int x = starySeznamJedincu.get(i).getX();
+                int y = starySeznamJedincu.get(i).getY();
+                if(starySeznamJedincu.get(i) instanceof Trava && hlad >= strach){
+                    novySeznamJedincu.set(i, new Prazdno(x, y));
                     korist.setHlad((hlad - 1));
                     return;
-                }else if(seznamJedincu.get(i) instanceof Prazdno){
+                }else if(starySeznamJedincu.get(i) instanceof Prazdno){
                     int xJedince = jedinec.getX();
                     int yJedince = jedinec.getY();
                     Random random = new Random();
                     if(random.nextInt(6) % 5 == 0){
-                        novySeznamJedincu.set(i, new Korist(seznamJedincu.get(i).getX(), seznamJedincu.get(i).getY()));
+                        novySeznamJedincu.set(i, new Korist(starySeznamJedincu.get(i).getX(), starySeznamJedincu.get(i).getY()));
                     }else {
                         novySeznamJedincu.set(i, jedinec);
                         novySeznamJedincu.set(indexJedince, new Prazdno(xJedince, yJedince));
@@ -144,9 +142,9 @@ public class Simulace implements Runnable {
             }
         }else if(jedinec instanceof Dravec){
             for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                if(seznamJedincu.get(i) instanceof Korist){
-                    int x = seznamJedincu.get(i).getX();
-                    int y = seznamJedincu.get(i).getY();
+                if(starySeznamJedincu.get(i) instanceof Korist){
+                    int x = starySeznamJedincu.get(i).getX();
+                    int y = starySeznamJedincu.get(i).getY();
                     novySeznamJedincu.set(i, new Prazdno(x, y));
                     return;
                 }else if(random.nextInt(5) % 3 == 0){
@@ -159,8 +157,8 @@ public class Simulace implements Runnable {
         }else if(jedinec instanceof Trava){
             for (int i = pocatecniIndex; i < konecnyIndex; i++) {
                 if(random.nextInt(5) % 3 == 0){
-                    int xJedince = seznamJedincu.get(i).getX();
-                    int yJedince = seznamJedincu.get(i).getY();
+                    int xJedince = starySeznamJedincu.get(i).getX();
+                    int yJedince = starySeznamJedincu.get(i).getY();
                     novySeznamJedincu.set(indexJedince, new Trava(xJedince, yJedince));
                 }
             }
@@ -209,16 +207,16 @@ public class Simulace implements Runnable {
         if (overZdaJeStavMozny(stav)) {
             switch (stav) {
                 case KORIST:
-                    seznamJedincu.add(new Korist(x, y));
+                    starySeznamJedincu.add(new Korist(x, y));
                     break;
                 case TRAVA:
-                    seznamJedincu.add(new Trava(x, y));
+                    starySeznamJedincu.add(new Trava(x, y));
                     break;
                 case PRAZDNO:
-                    seznamJedincu.add(new Prazdno(x, y));
+                    starySeznamJedincu.add(new Prazdno(x, y));
                     break;
                 case DRAVEC:
-                    seznamJedincu.add(new Dravec(x, y));
+                    starySeznamJedincu.add(new Dravec(x, y));
                     break;
             }
 
@@ -275,7 +273,7 @@ public class Simulace implements Runnable {
 
     public ArrayList<Bod> getSeznamBodu() {
         ArrayList<Bod> seznamBodu = new ArrayList<>();
-        for (Prazdno prazdno : seznamJedincu) {
+        for (Prazdno prazdno : starySeznamJedincu) {
             seznamBodu.add(prazdno.getBod());
         }
         return seznamBodu;
