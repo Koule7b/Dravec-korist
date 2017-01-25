@@ -2,16 +2,13 @@ package SimulaceDravecKorist.Server.Druhy;
 
 import SimulaceDravecKorist.Bod;
 
-import java.util.ArrayList;
-
 import static SimulaceDravecKorist.Bod.StavBodu.DRAVEC;
 
 /**
  * Created by stepanmudra on 20.01.17.
  */
 public class Dravec extends Zvire {
-    ArrayList<Bod> seznamBodu;
-    int pocetNasledujcichCyklu = 9;
+    int pocetNasledujcichCyklu = 10;
 
     public Dravec(int x, int y) {
         super(x, y);

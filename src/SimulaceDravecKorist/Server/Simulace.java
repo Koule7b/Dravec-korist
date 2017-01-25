@@ -102,22 +102,54 @@ public class Simulace implements Runnable {
 
     private void rozhledniSe(ListIterator<Prazdno> iterator, Prazdno jedinec) {
         ListIterator<Prazdno> okoli;
-        int x = jedinec.getX();
-        int y = jedinec.getX();
         int pocetNaX = seznamJedincu.get(seznamJedincu.size() - 1).getX() + 1;
-        int yHranice= seznamJedincu.get(seznamJedincu.size() - 1).getY();
-        int[][] souradniceDravcu;
-        int[][] souradniceKoristi;
-        int[][] souradniceTravy;
-        int indexJedince = pocetNaX * jedinec.getY() + jedinec.getY();
-        System.out.println(indexJedince);
-        int moznyPocatecniIndex = indexJedince - (pocetNaX + 1);
+        int pocetNaY = seznamJedincu.get(seznamJedincu.size() - 1).getY() + 1;
+        int indexJedince = pocetNaX * jedinec.getX() + jedinec.getY();
+        int moznyPocatecniIndex = indexJedince - pocetNaX - 1;
         int pocatecniIndex = moznyPocatecniIndex < 0 ? 0 : moznyPocatecniIndex;
-        System.out.println(pocatecniIndex);
-        //for (int i = ((x - 1) < 0) ? 0 : (x - 1); i <= (((x + 1) < xHranice)?(x + 1): xHranice); i++) {
-            //for (int j = ((y - 1) < 0) ? 0 : (y - 1); i <= (((y + 1) < yHranice)?(x + 1): yHranice); j++) {
-            //}
-        //}
+        int moznyKonecnyIndex = indexJedince + pocetNaX + 1;
+        int konecnyIndex = moznyKonecnyIndex >= pocetNaX * pocetNaY ? (pocetNaX * pocetNaY) - 1 : moznyKonecnyIndex;
+        if(jedinec instanceof Korist) {
+            Korist korist = (Korist) jedinec;
+            int hlad = korist.getHlad();
+            int strach = korist.getStrach();
+            korist.setHlad((hlad + 1));
+                for (int i = pocatecniIndex; i < konecnyIndex; i++) {
+                    if (seznamJedincu.get(i) instanceof Dravec) {
+                        korist.setStrach((strach + 1));
+                    }
+                }
+            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
+                int x = seznamJedincu.get(i).getX();
+                int y = seznamJedincu.get(i).getY();
+                if(seznamJedincu.get(i) instanceof Trava && hlad >= strach){
+                    seznamJedincu.set(i, new Prazdno(x, y));
+                    korist.setHlad((hlad - 1));
+                    return;
+                }else if(seznamJedincu.get(i) instanceof Prazdno){
+                    int xJedince = jedinec.getX();
+                    int yJedince = jedinec.getY();
+                    Random random = new Random();
+                    if(random.nextInt(6) % 5 == 0){
+                        iterator.set(new Korist(seznamJedincu.get(i).getX(), seznamJedincu.get(i).getY()));
+                    }else {
+                        seznamJedincu.set(i, jedinec);
+                        iterator.set(new Prazdno(xJedince, yJedince));
+                        return;
+                    }
+
+                }
+            }
+        }else if(jedinec instanceof Dravec){
+            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
+                if(seznamJedincu.get(i) instanceof Korist){
+                    int x = seznamJedincu.get(i).getX();
+                    int y = seznamJedincu.get(i).getY();
+                    seznamJedincu.set(i, new Prazdno(x, y));
+                    return;
+                }
+            }
+        }
     }
 
     private void overZivotnost(ListIterator<Prazdno> iterator, Prazdno jedinec) {

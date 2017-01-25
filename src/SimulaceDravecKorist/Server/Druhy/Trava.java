@@ -15,31 +15,12 @@ public class Trava  extends  Prazdno{
         super(x, y);
     }
 
-    public void rozmnozSe(int x, int y){
-        /*
-        for (Bod bod : seznamBodu) {
-            if( bod.getX() == x && bod.getY() == y){
-                bod.setStav(TRAVA);
-            }
-        }
-        */
-    }
-
     public int getPocetNasledujcichCyklu() {
         return pocetNasledujcichCyklu;
     }
 
     public void setPocetNasledujcichCyklu(int pocetNasledujcichCyklu) {
         this.pocetNasledujcichCyklu = pocetNasledujcichCyklu;
-    }
-    public void konecTravy(int x, int y){
-        /*
-        for (Bod bod : seznamBodu) {
-            if(bod.getX() == x && bod.getY() == y){
-                bod.setStav(PRAZDNO);
-            }
-        }
-        */
     }
     public Bod getBod() {
         return new Bod(x , y, TRAVA);
