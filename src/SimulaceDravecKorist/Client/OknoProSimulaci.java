@@ -46,6 +46,7 @@ public class OknoProSimulaci extends JFrame{
 
         LinkedBlockingDeque<ArrayList<Bod>> blokujiciFronta = new LinkedBlockingDeque<>();
         komunikator.setFrontaStavu(blokujiciFronta);
+
         new Thread(() -> {
             while (true) {
                 ArrayList<Bod> stav = null;

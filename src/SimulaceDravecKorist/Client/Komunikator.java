@@ -34,7 +34,6 @@ public class Komunikator implements Runnable{
             try {
                 ArrayList<Bod> seznamBodu = (ArrayList<Bod>) inputStream.readObject();
                 frontaStavu.putLast(seznamBodu);
-                System.out.println("prijal jsem zmenu");
             } catch (IOException e) {
                 uzavriSocket();
                 e.printStackTrace();

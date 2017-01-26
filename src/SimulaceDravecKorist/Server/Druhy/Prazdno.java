@@ -27,4 +27,10 @@ public class Prazdno {
     public int getY() {
         return y;
     }
+
+
+    public void presun(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }

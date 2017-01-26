@@ -7,7 +7,6 @@ import SimulaceDravecKorist.Server.Druhy.Prazdno;
 import SimulaceDravecKorist.Server.Druhy.Trava;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -29,8 +28,9 @@ public class Simulace implements Runnable {
     boolean simulaceBezi = true;
 
     Random random = new Random();
-    ArrayList<Prazdno> starySeznamJedincu = new ArrayList<>();
-    Prazdno[] novySeznamJedincu;
+    Prazdno[][] starySeznamJedincu;
+
+    Prazdno[][] novySeznamJedincu;
     private boolean pozastaveno = false;
 
     public Simulace(int pocetRadku, int pocetSloupcu, int procentaDravcu, int procentaKoristi, int procentaTravy, int procentaPrazdnehoMista) {
@@ -59,15 +59,15 @@ public class Simulace implements Runnable {
     public void run() {
         System.out.println("Simulace se spustila");
         vytvoreniPole();
-        novySeznamJedincu = starySeznamJedincu.stream().toArray(Prazdno[]::new);
         client.odesliStav(getSeznamBodu());
 
         try {
-            Thread.currentThread().sleep(10000);
+            Thread.currentThread().sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        novySeznamJedincu = starySeznamJedincu;
         boolean mrtvo = false;
         while (simulaceBezi && !mrtvo) {
             if (pozastaveno) {
@@ -77,12 +77,19 @@ public class Simulace implements Runnable {
                     e.printStackTrace();
                 }
             }
-            for (int i = 0; i < starySeznamJedincu.size(); i++){
-                Prazdno jedinec = starySeznamJedincu.get(i);
-                rozhledniSe(jedinec, i);
-                overZivotnost(jedinec, i);
+            for (int x = 0; x < starySeznamJedincu.length; x++) {
+                for (int y = 0; y < starySeznamJedincu[x].length; y++) {
+                    try {
+                        Prazdno jedinec = starySeznamJedincu[x][y];
+                        rozhledniSe(jedinec, x, y);
+                        overZivotnost(jedinec, x, y);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
-            starySeznamJedincu = new ArrayList<>(Arrays.asList(novySeznamJedincu));
+            starySeznamJedincu = novySeznamJedincu;
 
             try {
                 Thread.currentThread().sleep(1000);
@@ -91,87 +98,116 @@ public class Simulace implements Runnable {
             }
 
             mrtvo = true;
-            for (Prazdno o : starySeznamJedincu) {
-                if (o instanceof Korist || o instanceof Dravec) {
-                    mrtvo = false;
-                    break;
+            for (int x = 0; x < starySeznamJedincu.length; x++) {
+                for (int y = 0; y < starySeznamJedincu[x].length; y++) {
+                    Prazdno jedinec = starySeznamJedincu[x][y];
+                    if (jedinec instanceof Korist || jedinec instanceof Dravec) {
+                        mrtvo = false;
+                        break;
+                    }
                 }
-
             }
             client.odesliStav(getSeznamBodu());
         }
     }
 
-    private void rozhledniSe(Prazdno jedinec, int k) {
-        int pocetNaX = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getX() + 1;
-        int pocetNaY = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getY() + 1;
-        int indexJedince = k;
-        int moznyPocatecniIndex = indexJedince - pocetNaX - 1;
-        int pocatecniIndex = moznyPocatecniIndex < 0 ? 0 : moznyPocatecniIndex;
-        int moznyKonecnyIndex = indexJedince + pocetNaX + 1;
-        int konecnyIndex = moznyKonecnyIndex >= pocetNaX * pocetNaY ? (pocetNaX * pocetNaY) - 1 : moznyKonecnyIndex;
-        if(jedinec instanceof Korist) {
+    private void rozhledniSe(Prazdno jedinec, int x, int y) {
+        ArrayList<Prazdno> sousedi = new ArrayList<>();
+        if (x >= 1) {
+            sousedi.add(starySeznamJedincu[x - 1][y]);
+
+            if (y >= 1) {
+                sousedi.add(starySeznamJedincu[x - 1][y - 1]);
+            }
+            if (y < pocetRadku - 1) {
+                sousedi.add(starySeznamJedincu[x - 1][y + 1]);
+            }
+        }
+
+        if (y >= 1) {
+            sousedi.add(starySeznamJedincu[x][y - 1]);
+        }
+        if (y < pocetRadku - 1) {
+            sousedi.add(starySeznamJedincu[x][y + 1]);
+        }
+
+        if (x < pocetSloupcu - 1) {
+            if (y >= 1) {
+                sousedi.add(starySeznamJedincu[x + 1][y - 1]);
+            }
+            sousedi.add(starySeznamJedincu[x + 1][y]);
+            if (y < pocetRadku - 1) {
+                sousedi.add(starySeznamJedincu[x + 1][y + 1]);
+            }
+        }
+
+        int xJedince = jedinec.getX();
+        int yJedince = jedinec.getY();
+
+        if (jedinec instanceof Korist) {
             Korist korist = (Korist) jedinec;
             int hlad = korist.getHlad();
             int strach = korist.getStrach();
             korist.setHlad((hlad + 1));
-                for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                    if (starySeznamJedincu.get(i) instanceof Dravec) {
-                        korist.setStrach((strach + 1));
-                    }
+            for (Prazdno soused : sousedi) {
+                if (soused instanceof Dravec) {
+                    korist.setStrach((strach + 1));
                 }
-            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                int x = starySeznamJedincu.get(i).getX();
-                int y = starySeznamJedincu.get(i).getY();
-                if(starySeznamJedincu.get(i) instanceof Trava && hlad >= strach){
-                    novySeznamJedincu[i] = new Prazdno(x, y);
+            }
+            for (Prazdno soused : sousedi) {
+                if (soused instanceof Trava && hlad >= strach) {
+                    novySeznamJedincu[soused.getX()][soused.getY()] = new Prazdno(soused.getX(), soused.getY());
                     korist.setHlad((hlad - 1));
                     return;
-                }else if(starySeznamJedincu.get(i) instanceof Prazdno){
-                    int xJedince = jedinec.getX();
-                    int yJedince = jedinec.getY();
-                    Random random = new Random();
-                    if(random.nextInt(6) % 5 == 0){
-                        novySeznamJedincu[i] = new Korist(starySeznamJedincu.get(i).getX(), starySeznamJedincu.get(i).getY());
-                    }else {
-                        novySeznamJedincu[i] =  jedinec;
-                        novySeznamJedincu[indexJedince] =  new Prazdno(xJedince, yJedince);
+                } else if (!(soused instanceof Korist) && !(soused instanceof Dravec) && !(soused instanceof Trava)) {
+                    if (random.nextInt(6) % 5 == 0) {
+                        // rozmnožení
+                        novySeznamJedincu[soused.getX()][soused.getY()] = new Korist(soused.getX(), soused.getY());
+                        return;
+                    } else if (random.nextInt(6) % 5 == 0) {
+                        // přesun na sousední pole
+                        korist.presun(soused.getX(), soused.getY());
+                        novySeznamJedincu[soused.getX()][soused.getY()] = korist;
+                        novySeznamJedincu[xJedince][yJedince] = new Prazdno(xJedince, yJedince);
                         return;
                     }
 
                 }
             }
-        }else if(jedinec instanceof Dravec){
-            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                if(starySeznamJedincu.get(i) instanceof Korist){
-                    int x = starySeznamJedincu.get(i).getX();
-                    int y = starySeznamJedincu.get(i).getY();
-                    novySeznamJedincu[i] =  new Prazdno(x, y);
+        } else if (jedinec instanceof Dravec) {
+            for (Prazdno soused : sousedi) {
+                if (soused instanceof Korist) {
+                    if (random.nextInt(5) % 3 == 0) {
+                        novySeznamJedincu[soused.getX()][soused.getY()] = new Prazdno(soused.getX(), soused.getY());
+                        return;
+                    }
+                } else if (!(soused instanceof Trava) && !(soused instanceof  Dravec) && random.nextInt(5) % 3 == 0) {
+
+                    jedinec.presun(soused.getX(), soused.getY());
+                    novySeznamJedincu[soused.getX()][soused.getY()] = jedinec;
+                    novySeznamJedincu[xJedince][yJedince] = new Prazdno(xJedince, yJedince);
                     return;
-                }else if(random.nextInt(5) % 3 == 0){
-                    int xJedince = jedinec.getX();
-                    int yJedince = jedinec.getY();
-                    novySeznamJedincu[i] =  jedinec;
-                    novySeznamJedincu[indexJedince] = new Prazdno(xJedince, yJedince);
                 }
             }
-        }else if(jedinec instanceof Trava){
-            for (int i = pocatecniIndex; i < konecnyIndex; i++) {
-                if(random.nextInt(5) % 3 == 0){
-                    int xJedince = starySeznamJedincu.get(i).getX();
-                    int yJedince = starySeznamJedincu.get(i).getY();
-                    novySeznamJedincu[indexJedince] = new Trava(xJedince, yJedince);
+        } else if (jedinec instanceof Trava) {
+            for (Prazdno soused : sousedi) {
+                if (!(soused instanceof Dravec) && !(soused instanceof Trava) && !(soused instanceof  Korist) && random.nextInt(5) % 3 == 0) {
+                    novySeznamJedincu[soused.getX()][soused.getY()] = new Trava(soused.getX(), soused.getY());
+                    return;
                 }
             }
         }
     }
 
-    private void overZivotnost(Prazdno jedinec, int i) {
+    private void overZivotnost(Prazdno jedinec, int x, int y) {
+        int xJedince = jedinec.getX();
+        int yJedince = jedinec.getY();
+
         if (jedinec instanceof Trava) {
             Trava trava = (Trava) jedinec;
             int dalsiCykly = trava.getPocetNasledujcichCyklu();
             if (dalsiCykly == 0) {
-                novySeznamJedincu[i] = new Prazdno(jedinec.getX(), jedinec.getY());
+                novySeznamJedincu[xJedince][yJedince] = new Prazdno(xJedince, yJedince);
             }
             dalsiCykly--;
             trava.setPocetNasledujcichCyklu(dalsiCykly);
@@ -179,15 +215,15 @@ public class Simulace implements Runnable {
             Dravec dravec = (Dravec) jedinec;
             int dalsiCykly = dravec.getPocetNasledujcichCyklu();
             if (dalsiCykly == 0) {
-                novySeznamJedincu[i] = new Prazdno(jedinec.getX(), jedinec.getY());
+                novySeznamJedincu[xJedince][yJedince] = new Prazdno(xJedince, yJedince);
             }
             dalsiCykly--;
             dravec.setPocetNasledujcichCyklu(dalsiCykly);
         } else if (jedinec instanceof Korist) {
-            Korist korist = (Korist)jedinec;
+            Korist korist = (Korist) jedinec;
             int dalsiCykly = korist.getPocetNasledujcichCyklu();
-            if (dalsiCykly == 0) {
-                novySeznamJedincu[i] = new Prazdno(jedinec.getX(), jedinec.getY());
+            if (dalsiCykly == 0 || korist.getHlad() >= 10) {
+                novySeznamJedincu[xJedince][yJedince] = new Prazdno(xJedince, yJedince);
             }
             dalsiCykly--;
             korist.setPocetNasledujcichCyklu(dalsiCykly);
@@ -195,7 +231,7 @@ public class Simulace implements Runnable {
     }
 
     public void vytvoreniPole() {
-
+        starySeznamJedincu = new Prazdno[pocetSloupcu][pocetRadku];
         for (int x = 0; x < pocetSloupcu; x++) {
             for (int y = 0; y < pocetRadku; y++) {
                 vytvorBod(x, y);
@@ -208,16 +244,16 @@ public class Simulace implements Runnable {
         if (overZdaJeStavMozny(stav)) {
             switch (stav) {
                 case KORIST:
-                    starySeznamJedincu.add(new Korist(x, y));
+                    starySeznamJedincu[x][y] = new Korist(x, y);
                     break;
                 case TRAVA:
-                    starySeznamJedincu.add(new Trava(x, y));
+                    starySeznamJedincu[x][y] = new Trava(x, y);
                     break;
                 case PRAZDNO:
-                    starySeznamJedincu.add(new Prazdno(x, y));
+                    starySeznamJedincu[x][y] = new Prazdno(x, y);
                     break;
                 case DRAVEC:
-                    starySeznamJedincu.add(new Dravec(x, y));
+                    starySeznamJedincu[x][y] = new Dravec(x, y);
                     break;
             }
 
@@ -274,8 +310,10 @@ public class Simulace implements Runnable {
 
     public ArrayList<Bod> getSeznamBodu() {
         ArrayList<Bod> seznamBodu = new ArrayList<>();
-        for (Prazdno prazdno : starySeznamJedincu) {
-            seznamBodu.add(prazdno.getBod());
+        for (int x = 0; x < starySeznamJedincu.length; x++) {
+            for (int y = 0; y < starySeznamJedincu[x].length; y++) {
+                seznamBodu.add(starySeznamJedincu[x][y].getBod());
+            }
         }
         return seznamBodu;
     }
