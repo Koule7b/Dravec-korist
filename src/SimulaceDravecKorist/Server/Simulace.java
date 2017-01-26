@@ -63,7 +63,7 @@ public class Simulace implements Runnable {
         client.odesliStav(getSeznamBodu());
 
         try {
-            Thread.currentThread().sleep(3000);
+            Thread.currentThread().sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class Simulace implements Runnable {
             }
             for (int i = 0; i < starySeznamJedincu.size(); i++){
                 Prazdno jedinec = starySeznamJedincu.get(i);
-                rozhledniSe(jedinec);
+                rozhledniSe(jedinec, i);
                 overZivotnost(jedinec, i);
             }
             starySeznamJedincu = new ArrayList<>(Arrays.asList(novySeznamJedincu));
@@ -102,10 +102,10 @@ public class Simulace implements Runnable {
         }
     }
 
-    private void rozhledniSe(Prazdno jedinec) {
+    private void rozhledniSe(Prazdno jedinec, int k) {
         int pocetNaX = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getX() + 1;
         int pocetNaY = starySeznamJedincu.get(starySeznamJedincu.size() - 1).getY() + 1;
-        int indexJedince = pocetNaX * jedinec.getX() + jedinec.getY();
+        int indexJedince = k;
         int moznyPocatecniIndex = indexJedince - pocetNaX - 1;
         int pocatecniIndex = moznyPocatecniIndex < 0 ? 0 : moznyPocatecniIndex;
         int moznyKonecnyIndex = indexJedince + pocetNaX + 1;
